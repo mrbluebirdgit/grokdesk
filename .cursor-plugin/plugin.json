@@ -1,0 +1,10 @@
+{
+  "name": "grokdesk",
+  "description": "Eight-role Solana memecoin desk. Skills, agents, rules, read-only tools.",
+  "version": "0.1.0",
+  "author": { "name": "mrbluebirdgit" },
+  "license": "MIT",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/"
+}

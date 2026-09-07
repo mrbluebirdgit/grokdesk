@@ -1,0 +1,15 @@
+{
+  "name": "grokdesk-local",
+  "description": "Local GrokDesk marketplace entry",
+  "owner": { "name": "mrbluebirdgit" },
+  "plugins": [
+    {
+      "name": "grokdesk",
+      "description": "Eight-role Solana memecoin desk for Grok Bot",
+      "category": "trading",
+      "homepage": "https://github.com/mrbluebirdgit/grokdesk",
+      "keywords": ["solana", "memecoin", "grok-bot"],
+      "source": { "type": "local", "path": "." }
+    }
+  ]
+}
