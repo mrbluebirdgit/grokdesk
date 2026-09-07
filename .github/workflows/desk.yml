@@ -13,6 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GROKDESK: ${{ github.workspace }}/trading-desk
+      HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+      GMGN_API_KEY: ${{ secrets.GMGN_API_KEY }}
+      JUPITER_API_KEY: ${{ secrets.JUPITER_API_KEY }}
+      BIRDEYE_API_KEY: ${{ secrets.BIRDEYE_API_KEY }}
+      SOLSCAN_API_KEY: ${{ secrets.SOLSCAN_API_KEY }}
+      LUNARCRUSH_API_KEY: ${{ secrets.LUNARCRUSH_API_KEY }}
+      NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_ALLOWED_CHAT_ID: ${{ secrets.TELEGRAM_ALLOWED_CHAT_ID }}
+      AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,29 +30,38 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: install age
+      - name: write .env from Actions secrets
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y age
+          umask 077
+          {
+            echo "HELIUS_API_KEY=${HELIUS_API_KEY}"
+            echo "GMGN_API_KEY=${GMGN_API_KEY}"
+            echo "JUPITER_API_KEY=${JUPITER_API_KEY}"
+            echo "BIRDEYE_API_KEY=${BIRDEYE_API_KEY}"
+            echo "SOLSCAN_API_KEY=${SOLSCAN_API_KEY}"
+            echo "LUNARCRUSH_API_KEY=${LUNARCRUSH_API_KEY}"
+            echo "NEWSAPI_KEY=${NEWSAPI_KEY}"
+            echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}"
+            echo "TELEGRAM_ALLOWED_CHAT_ID=${TELEGRAM_ALLOWED_CHAT_ID}"
+            echo "GROKDESK_RPC=https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}"
+          } > .env
+          echo "wrote .env from repository secrets"
 
-      - name: decrypt secrets/env.age if key present
-        env:
-          AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
+      - name: install age
+        run: sudo apt-get update -y && sudo apt-get install -y age
+
+      - name: decrypt secrets/env.age if present
         run: |
           set -euo pipefail
-          if [ -z "${AGE_SECRET_KEY:-}" ]; then
-            echo "AGE_SECRET_KEY not set — running without .env"
-            exit 0
-          fi
-          if [ ! -f secrets/env.age ]; then
-            echo "secrets/env.age missing — running without .env"
+          if [ -z "${AGE_SECRET_KEY:-}" ] || [ ! -f secrets/env.age ]; then
+            echo "skip age overlay"
             exit 0
           fi
           umask 077
           printf '%s\n' "$AGE_SECRET_KEY" > /tmp/age.key
-          age -d -i /tmp/age.key secrets/env.age > .env
+          age -d -i /tmp/age.key secrets/env.age >> .env
           rm -f /tmp/age.key
-          echo "decrypted secrets/env.age → .env"
+          echo "appended decrypted env.age"
 
       - name: check
         run: bash scripts/check.sh
