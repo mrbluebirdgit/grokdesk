@@ -1,0 +1,51 @@
+name: grokdesk
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  desk:
+    runs-on: ubuntu-latest
+    env:
+      GROKDESK: ${{ github.workspace }}/trading-desk
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install age
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y age
+
+      - name: decrypt secrets/env.age if key present
+        env:
+          AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AGE_SECRET_KEY:-}" ]; then
+            echo "AGE_SECRET_KEY not set — running without .env"
+            exit 0
+          fi
+          if [ ! -f secrets/env.age ]; then
+            echo "secrets/env.age missing — running without .env"
+            exit 0
+          fi
+          umask 077
+          printf '%s\n' "$AGE_SECRET_KEY" > /tmp/age.key
+          age -d -i /tmp/age.key secrets/env.age > .env
+          rm -f /tmp/age.key
+          echo "decrypted secrets/env.age → .env"
+
+      - name: check
+        run: bash scripts/check.sh
+
+      - name: smoke
+        run: bash scripts/smoke.sh
