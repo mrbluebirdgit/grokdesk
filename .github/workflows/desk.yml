@@ -22,7 +22,8 @@ jobs:
       NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_ALLOWED_CHAT_ID: ${{ secrets.TELEGRAM_ALLOWED_CHAT_ID }}
-      AGE_SECRET_KEY: ${{ secrets.AGE_SECRET_KEY }}
+      MAX_SLIPPAGE_BPS: ${{ vars.MAX_SLIPPAGE_BPS }}
+      TOP10_MAX_PCT: ${{ vars.TOP10_MAX_PCT }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,28 +44,19 @@ jobs:
             echo "NEWSAPI_KEY=${NEWSAPI_KEY}"
             echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}"
             echo "TELEGRAM_ALLOWED_CHAT_ID=${TELEGRAM_ALLOWED_CHAT_ID}"
-            echo "GROKDESK_RPC=https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}"
           } > .env
           echo "wrote .env from repository secrets"
-
-      - name: install age
-        run: sudo apt-get update -y && sudo apt-get install -y age
-
-      - name: decrypt secrets/env.age if present
-        run: |
-          set -euo pipefail
-          if [ -z "${AGE_SECRET_KEY:-}" ] || [ ! -f secrets/env.age ]; then
-            echo "skip age overlay"
-            exit 0
-          fi
-          umask 077
-          printf '%s\n' "$AGE_SECRET_KEY" > /tmp/age.key
-          age -d -i /tmp/age.key secrets/env.age >> .env
-          rm -f /tmp/age.key
-          echo "appended decrypted env.age"
 
       - name: check
         run: bash scripts/check.sh
 
       - name: smoke
         run: bash scripts/smoke.sh
+
+      - name: live quotes
+        run: |
+          set -euo pipefail
+          python tools/authority_check.py --mint So11111111111111111111111111111111111111112
+          python tools/jupiter_quote.py --output-mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v --amount 1000000
+          python tools/birdeye_price.py --mint So11111111111111111111111111111111111111112
+          python tools/priority_fee.py
