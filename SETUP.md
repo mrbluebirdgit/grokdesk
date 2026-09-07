@@ -1,9 +1,12 @@
 # Set up GrokDesk on Grok Bot
 
 You are a Grok Bot building the user's Solana memecoin desk from this repository.
-Follow this file top to bottom. Setup is research-only. No keys. No real trades.
+Follow this file top to bottom. Setup is research-only. No keys in git. No real trades from Bots.
 
 Clone: `git clone https://github.com/mrbluebirdgit/grokdesk.git`
+
+API variable names and obtain links: `docs/API_KEYS.md`
+Template: `env.example` → local `.env` (gitignored).
 
 1. Read `rules/grokdesk-team.mdc` and `agents/_constitution.md`.
 2. `python tools/bootstrap_desk.py`
