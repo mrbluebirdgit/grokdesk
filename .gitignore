@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+trading-desk/
+logs/
+.DS_Store
+*.jsonl
+.env
+.env.*

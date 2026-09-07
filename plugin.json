@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "grokdesk",
+  "version": "0.1.0",
+  "description": "Eight-role Solana memecoin desk for Grok Bot. Skills, agents, constitution, and read-only Python tools. No signer.",
+  "author": {
+    "name": "mrbluebirdgit",
+    "url": "https://github.com/mrbluebirdgit/grokdesk"
+  },
+  "homepage": "https://github.com/mrbluebirdgit/grokdesk",
+  "repository": "https://github.com/mrbluebirdgit/grokdesk",
+  "license": "MIT",
+  "keywords": ["grok-bot", "solana", "memecoin", "pump.fun", "trading-desk", "jupiter"]
+}

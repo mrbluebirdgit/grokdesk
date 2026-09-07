@@ -1,0 +1,11 @@
+{
+  "name": "grokdesk",
+  "description": "Eight-role Solana memecoin desk for Grok Bot. Specialist agents, skills, constitution, read-only tools.",
+  "version": "0.1.0",
+  "author": {"name": "mrbluebirdgit"},
+  "license": "MIT",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/",
+  "keywords": ["solana", "memecoin", "pump.fun", "trading-desk", "grok-bot", "jupiter"]
+}
