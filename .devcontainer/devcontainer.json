@@ -1,0 +1,13 @@
+{
+  "name": "grokdesk",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install -r requirements.txt && mkdir -p ~/.config/grokdesk && chmod 700 ~/.config/grokdesk",
+  "forwardPorts": [],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}
