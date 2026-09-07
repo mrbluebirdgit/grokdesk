@@ -8,3 +8,6 @@ logs/
 *.jsonl
 .env
 .env.*
+wallet.json
+**/wallet.json
+*.keypair
