@@ -3,13 +3,7 @@
 from __future__ import annotations
 import argparse, base64, json, os, sys, time
 from pathlib import Path
-
-from common import WSOL, emit, fail, jupiter_quote_url, load_dotenv_if_needed, rpc_url
-
-try:
-    load_dotenv_if_needed()
-except Exception:
-    pass
+from common import WSOL, emit, fail, jupiter_quote_url, rpc_url
 
 def wallet_path() -> Path:
     raw = os.environ.get("GROKDESK_WALLET") or str(Path.home() / ".config/grokdesk/wallet.json")
@@ -49,7 +43,7 @@ def main() -> int:
     try:
         kp = load_keypair(path)
     except FileNotFoundError as exc:
-        return fail(str(exc), hint="export Phantom private key json to that path on the box running this, not git")
+        return fail(str(exc), hint="put Phantom private key JSON on the box running this, not git")
     except Exception as exc:
         return fail(f"wallet load failed: {exc}")
 
